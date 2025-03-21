@@ -9,39 +9,32 @@
 # logic including regex checking for forbidden characters, certain characters, whitespace
 # check for length
 
+# IMPORTING LIBRARIES
 import openpyxl
 from pathlib import Path
 import re
 from openpyxl.styles import Font, PatternFill
 
+# SETUP
 path = Path.home()/'Desktop'/'template_dummy.xlsx'
-# "C:\Users\olivi\Desktop\template_dummy.xlsx"
-print(path)
+error_fill =PatternFill(start_color="FF0000", end_color="FF0000", patternType="solid")
+alphanumeric_regex = "[A-Z]"
 
+# OPENING THE WORKBOOK AND TARGETING THE WORKSHEET
 wb = openpyxl.load_workbook(path)
-
 ws = wb["Catalogue Template"]
-print(ws.title)
 
-# department_code = ws["A4"]
-# print(department_code.value)
-# department_code_range = "A4:A"+str()
-
-# max_col = inclusive
-test_string = "hello!!2"
-alphanumeric_regex = r"\[A-Z]"
-error_fill =PatternFill(start_color="0000FF", end_color="0000FF", patternType="solid")
-
+# CHECKING THE DEPARTMENT CODE COLUMN (D)
 for col in ws.iter_cols(min_row=4, max_col=1):
     for cell in col:
-        print(cell.value)
-        # print(type(cell.value))
-        if type(cell.value) != str:
+        if not bool(re.match(alphanumeric_regex, str(cell.value))):
             cell.fill = error_fill
-        # if not bool(re.match(alphanumeric_regex, cell.value)):
-        #     print("not a capital letter!")
 
-# result = bool(re.match(alphanumeric_regex,test_string))
-# print(result)
+# CHECKING THE SERIES NUMBER
+# these should all be the same number
+# perhaps there could be some kind of user input to state what number this ought to be
+# for now i will hard code it
+series_num = 28
 
+# SAVING THE CHANGES
 wb.save(path)
